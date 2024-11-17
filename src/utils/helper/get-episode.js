@@ -157,9 +157,60 @@ const epsQualityFunction = (num, res) => {
   return response;
 };
 
+const processDownloadLinks = ($, element) => {
+  const downloadLinks = {
+    mp4: {
+      "360p": [],
+      "480p": [],
+      "720p": []
+    },
+    mkv: {
+      "480p": [],
+      "720p": [],
+      "1080p": []
+    }
+  };
+
+  element.find("li").each((_, li) => {
+    const qualityText = $(li).find("strong").text().toLowerCase();
+    const size = $(li).find("i").text();
+
+    $(li).find("a").each((_, anchor) => {
+      const host = $(anchor).text();
+      const link = $(anchor).attr("href");
+      const downloadInfo = { host, link, size };
+
+      if (qualityText.includes("mp4")) {
+        if (qualityText.includes("360")) downloadLinks.mp4["360p"].push(downloadInfo);
+        else if (qualityText.includes("480")) downloadLinks.mp4["480p"].push(downloadInfo);
+        else if (qualityText.includes("720")) downloadLinks.mp4["720p"].push(downloadInfo);
+      } else if (qualityText.includes("mkv")) {
+        if (qualityText.includes("480")) downloadLinks.mkv["480p"].push(downloadInfo);
+        else if (qualityText.includes("720")) downloadLinks.mkv["720p"].push(downloadInfo);
+        else if (qualityText.includes("1080")) downloadLinks.mkv["1080p"].push(downloadInfo);
+      }
+    });
+  });
+
+  // Clean up empty categories
+  Object.keys(downloadLinks).forEach(format => {
+    Object.keys(downloadLinks[format]).forEach(quality => {
+      if (downloadLinks[format][quality].length === 0) {
+        delete downloadLinks[format][quality];
+      }
+    });
+    if (Object.keys(downloadLinks[format]).length === 0) {
+      delete downloadLinks[format];
+    }
+  });
+
+  return downloadLinks;
+};
+
 module.exports = {
   getNonce,
   getUrlAjax,
   notFoundQualityHandler,
   epsQualityFunction,
+  processDownloadLinks,
 };

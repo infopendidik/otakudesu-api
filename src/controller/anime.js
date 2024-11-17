@@ -4,8 +4,7 @@ const baseUrl = require("../utils/constant/url");
 const {
   getNonce,
   getUrlAjax,
-  notFoundQualityHandler,
-  epsQualityFunction,
+  processDownloadLinks,
 } = require("../utils/helper/get-episode");
 
 const getOngoingAnime = async (req, res) => {
@@ -412,22 +411,32 @@ const getAnimeEpisode = async (req, res) => {
     obj.mirror_embed2 = { quality: "480p", streaming: streaming2 };
     obj.mirror_embed3 = { quality: "720p", streaming: streaming3 };
 
-    let low_quality, medium_quality, high_quality;
-    if (
-      $(
-        "#venkonten > div.venser > div.venutama > div.download > ul > li:nth-child(1)"
-      ).text() === ""
-    ) {
-      low_quality = notFoundQualityHandler(data, 0);
-      medium_quality = notFoundQualityHandler(data, 1);
-      high_quality = notFoundQualityHandler(data, 2);
-    } else {
-      low_quality = epsQualityFunction(0, data);
-      medium_quality = epsQualityFunction(1, data);
-      high_quality = epsQualityFunction(2, data);
+    const downloadSection = $(".download");
+    let downloadLinks = {};
+    
+    if (downloadSection.length) {
+      if ($("#venkonten > div.venser > div.venutama > div.download > ul > li:nth-child(1)").text() === "") {
+        downloadSection.find(".yondarkness-box").each((_, box) => {
+          const links = processDownloadLinks($, $(box));
+
+          downloadLinks = {
+            mp4: { ...downloadLinks.mp4, ...links.mp4 },
+            mkv: { ...downloadLinks.mkv, ...links.mkv }
+          };
+        });
+      } else {
+        downloadSection.find("ul").each((_, ul) => {
+          const links = processDownloadLinks($, $(ul));
+
+          downloadLinks = {
+            mp4: { ...downloadLinks.mp4, ...links.mp4 },
+            mkv: { ...downloadLinks.mkv, ...links.mkv }
+          };
+        });
+      }
     }
 
-    obj.quality = { low_quality, medium_quality, high_quality };
+    obj.download_links = downloadLinks;
 
     res.send({
       status: true,
