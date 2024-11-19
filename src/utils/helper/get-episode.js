@@ -180,14 +180,27 @@ const processDownloadLinks = ($, element) => {
       const link = $(anchor).attr("href");
       const downloadInfo = { host, link, size };
 
-      if (qualityText.includes("mp4")) {
-        if (qualityText.includes("360")) downloadLinks.mp4["360p"].push(downloadInfo);
-        else if (qualityText.includes("480")) downloadLinks.mp4["480p"].push(downloadInfo);
-        else if (qualityText.includes("720")) downloadLinks.mp4["720p"].push(downloadInfo);
-      } else if (qualityText.includes("mkv")) {
-        if (qualityText.includes("480")) downloadLinks.mkv["480p"].push(downloadInfo);
-        else if (qualityText.includes("720")) downloadLinks.mkv["720p"].push(downloadInfo);
-        else if (qualityText.includes("1080")) downloadLinks.mkv["1080p"].push(downloadInfo);
+      // Default assumptions for format based on quality
+      let isMp4 = true;
+
+      // Determine format explicitly if possible
+      if (qualityText.includes("mkv")) {
+        isMp4 = false;
+      } else if (qualityText.includes("mp4")) {
+        isMp4 = true;
+      }
+
+      // Determine quality and map to the appropriate format
+      if (qualityText.includes("360")) {
+        if (isMp4) downloadLinks.mp4["360p"].push(downloadInfo);
+      } else if (qualityText.includes("480")) {
+        if (isMp4) downloadLinks.mp4["480p"].push(downloadInfo);
+        else downloadLinks.mkv["480p"].push(downloadInfo);
+      } else if (qualityText.includes("720")) {
+        if (isMp4) downloadLinks.mp4["720p"].push(downloadInfo);
+        else downloadLinks.mkv["720p"].push(downloadInfo);
+      } else if (qualityText.includes("1080")) {
+        if (!isMp4) downloadLinks.mkv["1080p"].push(downloadInfo);
       }
     });
   });
