@@ -1,9 +1,9 @@
 const cheerio = require("cheerio");
 const fetchData = require("../utils/helper/fetch");
 const baseUrl = require("../utils/constant/url");
+const { getStreamingLinks } = require("../utils/helper/iframe");
 const {
   getNonce,
-  getUrlAjax,
   processDownloadLinks,
 } = require("../utils/helper/get-episode");
 
@@ -353,7 +353,6 @@ const getAnimeEpisode = async (req, res) => {
     $(".flir > a").each((index, element) => {
       const title_ref = $(element).text();
       const link_ref = $(element).attr("href").split("/")[4];
-
       obj.relative.push({ title_ref, link_ref });
     });
 
@@ -368,44 +367,9 @@ const getAnimeEpisode = async (req, res) => {
       }
     });
 
-    const extractIframeSrc = async (contentLink) => {
-      const html = await getUrlAjax(contentLink, nonce);
-      const parsed = cheerio.load(html);
-      return parsed("iframe").attr("src");
-    };
-
-    const streaming1 = await Promise.all(
-      $("#embed_holder > div.mirrorstream > ul.m360p > li")
-        .map(async (k, v) => {
-          const driver = $(v).text();
-          const content = $(v).find("a").data().content;
-          const link = await extractIframeSrc(content);
-          return { driver, link };
-        })
-        .get()
-    );
-
-    const streaming2 = await Promise.all(
-      $(".mirrorstream > .m480p > li")
-        .map(async (k, v) => {
-          const driver = $(v).text();
-          const content = $(v).find("a").data().content;
-          const link = await extractIframeSrc(content);
-          return { driver, link };
-        })
-        .get()
-    );
-
-    const streaming3 = await Promise.all(
-      $(".mirrorstream > .m720p > li")
-        .map(async (k, v) => {
-          const driver = $(v).text();
-          const content = $(v).find("a").data().content;
-          const link = await extractIframeSrc(content);
-          return { driver, link };
-        })
-        .get()
-    );
+    const streaming1 = await getStreamingLinks($, "#embed_holder > div.mirrorstream > ul.m360p > li", nonce, '360p');
+    const streaming2 = await getStreamingLinks($, ".mirrorstream > .m480p > li", nonce, '480p');
+    const streaming3 = await getStreamingLinks($, ".mirrorstream > .m720p > li", nonce, '720p');
 
     obj.mirror_embed1 = { quality: "360p", streaming: streaming1 };
     obj.mirror_embed2 = { quality: "480p", streaming: streaming2 };
@@ -418,7 +382,6 @@ const getAnimeEpisode = async (req, res) => {
       if ($("#venkonten > div.venser > div.venutama > div.download > ul > li:nth-child(1)").text() === "") {
         downloadSection.find(".yondarkness-box").each((_, box) => {
           const links = processDownloadLinks($, $(box));
-
           downloadLinks = {
             mp4: { ...downloadLinks.mp4, ...links.mp4 },
             mkv: { ...downloadLinks.mkv, ...links.mkv }
@@ -427,7 +390,6 @@ const getAnimeEpisode = async (req, res) => {
       } else {
         downloadSection.find("ul").each((_, ul) => {
           const links = processDownloadLinks($, $(ul));
-
           downloadLinks = {
             mp4: { ...downloadLinks.mp4, ...links.mp4 },
             mkv: { ...downloadLinks.mkv, ...links.mkv }

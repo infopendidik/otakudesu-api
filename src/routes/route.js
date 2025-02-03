@@ -11,6 +11,7 @@ const {
   getGenreDetails,
   getScheduleAnime,
 } = require("../controller/anime");
+const { streamVideo } = require("../utils/helper/iframe");
 const router = express.Router();
 
 router.get("/ongoing/:page", getOngoingAnime);
@@ -23,6 +24,7 @@ router.get("/search", searchAnime);
 router.get("/genres", getGenreList);
 router.get("/genres/:genre_id/:page", getGenreDetails);
 router.get("/schedule", getScheduleAnime);
+router.get("/stream", streamVideo);
 
 
 
