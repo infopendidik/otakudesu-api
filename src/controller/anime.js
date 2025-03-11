@@ -9,7 +9,7 @@ const {
 
 const getOngoingAnime = async (req, res) => {
   const page = req.params.page || 1;
-  const url = `${baseUrl}/ongoing-anime/page/${page}`;
+  const url = `${baseUrl.anime}/ongoing-anime/page/${page}`;
   try {
     const data = await fetchData(url, res);
     const $ = cheerio.load(data);
@@ -62,7 +62,7 @@ const getOngoingAnime = async (req, res) => {
 
 const getFinishedAnime = async (req, res) => {
   const page = req.params.page || 1;
-  const url = `${baseUrl}/complete-anime/page/${page}`;
+  const url = `${baseUrl.anime}/complete-anime/page/${page}`;
   try {
     const data = await fetchData(url, res);
     const $ = cheerio.load(data);
@@ -114,7 +114,7 @@ const getFinishedAnime = async (req, res) => {
 };
 
 const getListAnime = async (req, res) => {
-  const url = `${baseUrl}/anime-list/`;
+  const url = `${baseUrl.anime}/anime-list/`;
   try {
     const data = await fetchData(url, res);
     const $ = cheerio.load(data);
@@ -160,7 +160,7 @@ const getListAnime = async (req, res) => {
 
 const searchAnime = async (req, res) => {
   const query = req.query.query;
-  const url = `${baseUrl}/?s=${query}&post_type=anime`;
+  const url = `${baseUrl.anime}/?s=${query}&post_type=anime`;
   try {
     const data = await fetchData(url, res);
     const $ = cheerio.load(data);
@@ -220,7 +220,7 @@ const searchAnime = async (req, res) => {
 
 const getAnimeDetails = async (req, res) => {
   const anime_id = req.params.anime_id;
-  const url = `${baseUrl}/anime/${anime_id}`;
+  const url = `${baseUrl.anime}/anime/${anime_id}`;
 
   try {
     const data = await fetchData(url, res);
@@ -339,7 +339,7 @@ const getAnimeDetails = async (req, res) => {
 
 const getAnimeEpisode = async (req, res) => {
   const anime_id = req.params.anime_id;
-  const url = `${baseUrl}/episode/${anime_id}`;
+  const url = `${baseUrl.anime}/episode/${anime_id}`;
 
   try {
     const data = await fetchData(url, res);
@@ -367,7 +367,7 @@ const getAnimeEpisode = async (req, res) => {
       }
     });
 
-    const streaming1 = await getStreamingLinks($, "#embed_holder > div.mirrorstream > ul.m360p > li", nonce, '360p');
+    const streaming1 = await getStreamingLinks($, ".mirrorstream > .m360p > li", nonce, '360p');
     const streaming2 = await getStreamingLinks($, ".mirrorstream > .m480p > li", nonce, '480p');
     const streaming3 = await getStreamingLinks($, ".mirrorstream > .m720p > li", nonce, '720p');
 
@@ -379,7 +379,7 @@ const getAnimeEpisode = async (req, res) => {
     let downloadLinks = {};
     
     if (downloadSection.length) {
-      if ($("#venkonten > div.venser > div.venutama > div.download > ul > li:nth-child(1)").text() === "") {
+      if ($("ul > li:nth-child(1)").text() === "") {
         downloadSection.find(".yondarkness-box").each((_, box) => {
           const links = processDownloadLinks($, $(box));
           downloadLinks = {
@@ -415,7 +415,7 @@ const getAnimeEpisode = async (req, res) => {
 
 const getBatchAnime = async (req, res) => {
   const batch_id = req.params.batch_id;
-  const fullUrl = `${baseUrl}/batch/${batch_id}`;
+  const fullUrl = `${baseUrl.anime}/batch/${batch_id}`;
   console.log(fullUrl);
   try {
     const data = await fetchData(fullUrl, res);
@@ -459,7 +459,7 @@ const getBatchAnime = async (req, res) => {
 };
 
 const getGenreList = async (req, res) => {
-  const url = `${baseUrl}/genre-list/`;
+  const url = `${baseUrl.anime}/genre-list/`;
   try {
     const data = await fetchData(url, res);
     const $ = cheerio.load(data);
@@ -494,7 +494,7 @@ const getGenreList = async (req, res) => {
 const getGenreDetails = async (req, res) => {
   const genre_id = req.params.genre_id;
   const page = req.params.page || 1;
-  const url = `${baseUrl}/genres/${genre_id}/page/${page}`;
+  const url = `${baseUrl.anime}/genres/${genre_id}/page/${page}`;
 
   try {
     const data = await fetchData(url, res);
@@ -558,7 +558,7 @@ const getGenreDetails = async (req, res) => {
 };
 
 const getScheduleAnime = async (req, res) => {
-  const url = `${baseUrl}/jadwal-rilis/`;
+  const url = `${baseUrl.anime}/jadwal-rilis/`;
   try {
     const data = await fetchData(url, res);
     const $ = cheerio.load(data);
