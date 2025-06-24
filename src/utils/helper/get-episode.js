@@ -9,17 +9,17 @@ const getNonce = async () => {
   };
 
   try {
-    let url = `${baseUrl}/wp-admin/admin-ajax.php`;
+    let url = `${baseUrl.anime}/wp-admin/admin-ajax.php`;
     const response = await Axios.post(url, qs.stringify(payload), {
       headers: {
-        Origin: baseUrl,
+        Origin: baseUrl.anime,
         Cookie:
           "_ga=GA1.2.826878888.1673844093; _gid=GA1.2.1599003702.1674031831; _gat=1",
-        Referer: baseUrl,
+        Referer: baseUrl.anime,
         "User-Agent":
           "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:101.0) Gecko/20100101 Firefox/101.0",
         "X-Requested-With": "XMLHttpRequest",
-        // 'Host': baseUrl,
+        // 'Host': baseUrl.anime,
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
       },
     });
@@ -40,17 +40,17 @@ const getUrlAjax = async (content, nonce) => {
       action: "2a3505c93b0035d3f455df82bf976b84",
     };
 
-    let url = `${baseUrl}/wp-admin/admin-ajax.php`;
+    let url = `${baseUrl.anime}/wp-admin/admin-ajax.php`;
     const response = await Axios.post(url, qs.stringify(payload), {
       headers: {
-        Origin: baseUrl,
+        Origin: baseUrl.anime,
         Cookie:
           "_ga=GA1.2.826878888.1673844093; _gid=GA1.2.1599003702.1674031831; _gat=1",
-        Referer: baseUrl,
+        Referer: baseUrl.anime,
         "User-Agent":
           "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:101.0) Gecko/20100101 Firefox/101.0",
         "X-Requested-With": "XMLHttpRequest",
-        // 'Host': baseUrl,
+        // 'Host': baseUrl.anime,
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
       },
     });
