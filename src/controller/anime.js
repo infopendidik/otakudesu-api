@@ -332,7 +332,8 @@ const getAnimeDetails = async (req, res) => {
   } catch (error) {
     res.send({
       status: false,
-      message: error.message,
+      code: error.response ? error.response.status : 500,
+      message: error.message || "Bad Request",
     });
   }
 };
