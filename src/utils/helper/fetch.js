@@ -12,19 +12,9 @@ async function fetchData(url, res) {
     if (response.status === 200) {
       return response.data;
     } else {
-      res.send({
-        status: false,
-        code: response.status,
-        message: `Request failed with status ${response.status}`,
-      });
       throw new Error(`Request failed with status ${response.status}`);
     }
   } catch (error) {
-    res.send({
-      status: false,
-      code: error.response ? error.response.status : 500,
-      message: error.message || "Bad Request",
-    });
     throw error;
   }
 }
